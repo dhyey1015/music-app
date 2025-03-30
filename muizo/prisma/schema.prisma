@@ -23,29 +23,31 @@ enum StreamType{
 }
 
 model User {
-  id          String          @id @default(uuid())
-  email       String          
-  provider    Provider
-  streams     Stream[]
-  upVotes     UpVotes[]
+  id            String          @id @default(uuid())
+  email         String          
+  provider      Provider
+  streams       Stream[]
+  upVotes       UpVotes[]
 }
 
 model Stream {
-  id          String          @id @default(uuid())
-  type        StreamType
-  isActive    Boolean         @default(true)
-  upVotes     UpVotes[]
-  userId      String
-  user        User            @relation(fields: [userId], references: [id])
+  id            String          @id @default(uuid())
+  type          StreamType
+  url           String
+  extractedId   String
+  isActive      Boolean         @default(true)
+  upVotes       UpVotes[]
+  userId        String
+  user          User            @relation(fields: [userId], references: [id])
 }
 
 
 model UpVotes{
-  id          String          @id @default(uuid())
-  userId      String
-  streamId    String
-  user        User            @relation(fields: [userId], references: [id])
-  stream      Stream          @relation(fields: [streamId], references: [id ])
+  id            String          @id @default(uuid())
+  userId        String
+  streamId      String
+  user          User            @relation(fields: [userId], references: [id])
+  stream        Stream          @relation(fields: [streamId], references: [id ])
   @@unique([userId, streamId])
 }
 
