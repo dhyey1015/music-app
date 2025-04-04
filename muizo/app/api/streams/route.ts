@@ -37,7 +37,7 @@ export async function POST(req: NextRequest){
         //fetching yt video things like thumbnail and title of vidoe
         const res  = await youtubesearchapi.GetVideoDetails(extractedId);
         const thumbnails = res.thumbnail.thumbnails;
-        
+
         //this line sorts the elements in lower to higher order
         thumbnails.sort((a : {width: number}, b : {width: number}) => a.width < b.width ? -1 : 1);
 
@@ -49,8 +49,8 @@ export async function POST(req: NextRequest){
                 extractedId: extractedId,
                 type: "Youtube",
                 title: res.title ?? "Can't find video",
-                bigImg: thumbnails[thumbnails.length - 1] ?? "https://t3.ftcdn.net/jpg/02/36/99/22/360_F_236992283_sNOxCVQeFLd5pdqaKGh8DRGMZy7P4XKm.jpg",
-                smallImg: (thumbnails.length > 1 ? thumbnails[thumbnails.length - 2] : thumbnails[thumbnails.length - 1]) ?? "https://t3.ftcdn.net/jpg/02/36/99/22/360_F_236992283_sNOxCVQeFLd5pdqaKGh8DRGMZy7P4XKm.jpg" 
+                bigImg: thumbnails[thumbnails.length - 1].url ?? "https://t3.ftcdn.net/jpg/02/36/99/22/360_F_236992283_sNOxCVQeFLd5pdqaKGh8DRGMZy7P4XKm.jpg",
+                smallImg: (thumbnails.length > 1 ? thumbnails[thumbnails.length - 2].url : thumbnails[thumbnails.length - 1].url) ?? "https://t3.ftcdn.net/jpg/02/36/99/22/360_F_236992283_sNOxCVQeFLd5pdqaKGh8DRGMZy7P4XKm.jpg" 
             }
         });
         return NextResponse.json({
