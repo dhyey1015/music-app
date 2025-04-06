@@ -12,7 +12,7 @@ export default function Home() {
        
             <Link href={"#"} className="flex items-center justify-center">
               <Music className="h-6 w-6 text-purple-400" />
-              {/* solve this hydration problem */}
+              {/*TODO: solve this hydration problem*/}
               <p className="ml-2 text-lg font-bold text-purple-400">Muizo</p>
             </Link>
             <nav className="ml-auto flex gap-4 sm:gap-6">
