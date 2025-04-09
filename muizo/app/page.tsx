@@ -3,27 +3,29 @@ import { AppBar } from "./components/AppBar";
 import { Button } from "@/components/ui/button";
 import { Headphones, Link, Music, Radio, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Redirect } from "./components/Redirect";
 
 export default function Home() {
   return (
     <div>
+      <Redirect/>
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
-        <header className="px-4 lg:px-6 h-14 flex items-center">
-       
-            <Link href={"#"} className="flex items-center justify-center">
-              <Music className="h-6 w-6 text-purple-400" />
-              {/*TODO: solve this hydration problem*/}
-              <p className="ml-2 text-lg font-bold text-purple-400">Muizo</p>
-            </Link>
-            <nav className="ml-auto flex gap-4 sm:gap-6">
-                <Link href={"#"} className="text-sm font-medium text-gray-300 hover:text-purple-400 transition-colors">
+        <header className="flex justify-between px-4 lg:px-6 h-14  items-center">
+        <div className="flex items-center">
+          <Music className="w-8 h-8 text-purple-400" />
+          <p className="ml-2 text-3xl font-bold text-purple-400">Muizo</p>
+        </div>
+
+             
+            {/* <nav className="ml-auto flex gap-4 sm:gap-6">
+                <Link href="#" className="text-sm font-medium text-gray-300 hover:text-purple-400 transition-colors">
                     Features
                 </Link>
-                <Link href={"#"} className="text-sm font-medium text-gray-300 hover:text-purple-400 transition-colors">
+                <Link href="#" className="text-sm font-medium text-gray-300 hover:text-purple-400 transition-colors">
                     Pricing
                 </Link>
-            </nav>
-      
+            </nav> */}
+            <AppBar/>
         </header>
         <main className="flex-1 py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
