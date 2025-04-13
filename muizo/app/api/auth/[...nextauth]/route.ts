@@ -1,8 +1,8 @@
 import { prismaClient } from "@/app/lib/db";
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
     providers : [
 
         GoogleProvider({
@@ -10,6 +10,7 @@ const handler = NextAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
           })
     ],
+    secret: process.env.NEXTAUTH_SECRET ?? "secre",
     callbacks: {
         async signIn(params){
             if (!params.user.email){
@@ -29,6 +30,8 @@ const handler = NextAuth({
             return true;
         }
     }
-})
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET , handler as POST }

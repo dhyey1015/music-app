@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThumbsUp, ThumbsDown, Play, Share2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+
+const REFRESH_INTERVAL_MS = 10 * 1000
 
 type Song = {
   id: number;
@@ -39,6 +42,20 @@ export default function SongVotingQueue() {
       thumbnailUrl: "https://img.youtube.com/vi/L_jWHffIx5E/0.jpg",
     },
   ]);
+
+  async function refreshStreams(){
+      const res = await fetch(`/api/streams/my`, {
+        credentials: "include",
+      });
+      console.log(res);
+  }
+
+  useEffect(() =>{
+    refreshStreams();
+    const interval = setInterval(() => {
+
+    }, REFRESH_INTERVAL_MS);
+  }, [])
 
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
 
