@@ -135,39 +135,45 @@ export default function SongVotingQueue() {
         </div>
       </div>
 
-      {queue.map((song) => (
-        <div
-          key={song.id}
-          className="w-full max-w-[1000px] min-h-[100px] sm:h-[150px] bg-gray-900 text-white rounded-xl shadow-md px-4"
-        >
-          <div className="pl-2 flex items-center h-full space-x-5">
-            <img
-              src={song.thumbnailUrl}
-              alt={song.title}
-              className="w-[80px] sm:w-[130px] md:w-[170px] h-[50px] sm:h-[80px] md:h-[100px] rounded-md object-cover"
-            />
-            <div className="space-y-2 w-full">
-              <div className="text-lg sm:text-xl font-semibold truncate">{song.title}</div>
-              <div className="flex items-center space-x-3">
-                <Button
-                  onClick={() => handleVote(song.id, "like")}
-                  className="bg-purple-400 flex items-center space-x-1"
-                >
-                  <ThumbsUp size={18} />
-                  <span>{song.likes}</span>
-                </Button>
-                <Button
-                  onClick={() => handleVote(song.id, "dislike")}
-                  className="bg-purple-400 flex items-center space-x-1"
-                >
-                  <ThumbsDown size={18} />
-                  <span>{song.dislikes}</span>
-                </Button>
+      <div className="flex items-center justify-center">
+        <div className="space-y-4 w-full max-w-[300px] md:max-w-[400px] lg:max-w-[800px]">
+          <div className="text-white font-extrabold text-3xl">Upcoming Songs</div>
+
+          {queue.map((song) => (
+          <div
+            key={song.id}
+            className="w-full max-w-[1000px] min-h-[100px] sm:h-[150px] bg-gray-900 text-white rounded-xl shadow-md px-4"
+          >
+            <div className="pl-2 flex items-center h-full space-x-5">
+              <img
+                src={song.thumbnailUrl}
+                alt={song.title}
+                className="w-[80px] sm:w-[130px] md:w-[170px] h-[50px] sm:h-[80px] md:h-[100px] rounded-md object-cover"
+              />
+              <div className="space-y-2 w-full">
+                <div className="text-lg sm:text-xl font-semibold truncate">{song.title}</div>
+                <div className="flex items-center space-x-3">
+                  <Button
+                    onClick={() => handleVote(song.id, "like")}
+                    className="bg-purple-400 flex items-center space-x-1 hover:bg-purple-800"
+                  >
+                    <ThumbsUp size={18} />
+                    <span>{song.likes}</span>
+                  </Button>
+                  <Button
+                    onClick={() => handleVote(song.id, "dislike")}
+                    className="bg-purple-400 flex items-center space-x-1 hover:bg-purple-800"
+                  >
+                    <ThumbsDown size={18} />
+                    <span>{song.dislikes}</span>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
+          ))}
         </div>
-      ))}
+      </div>
 
       <ToastContainer position="top-center" />
     </div>
