@@ -7,6 +7,7 @@ import { ThumbsUp, ThumbsDown, Play, Share2 } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { title } from "process";
 
 const REFRESH_INTERVAL_MS = 10 * 1000
 
@@ -19,35 +20,32 @@ type Song = {
 };
 
 export default function SongVotingQueue() {
-  const [queue, setQueue] = useState<Song[]>([
-    {
-      id: 1,
-      title: "Song A",
-      likes: 2,
-      dislikes: 1,
-      thumbnailUrl: "https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg",
-    },
-    {
-      id: 2,
-      title: "Song B",
-      likes: 0,
-      dislikes: 0,
-      thumbnailUrl: "https://img.youtube.com/vi/3JZ_D3ELwOQ/0.jpg",
-    },
-    {
-      id: 3,
-      title: "Song C",
-      likes: 1,
-      dislikes: 0,
-      thumbnailUrl: "https://img.youtube.com/vi/L_jWHffIx5E/0.jpg",
-    },
-  ]);
+  const [queue, setQueue] = useState<Song[]>([]);
 
   async function refreshStreams(){
-      const res = await fetch(`/api/streams/my`, {
-        credentials: "include",
-      });
-      console.log(res);
+      try{
+        const res = await fetch(`/api/streams/my`, {
+          credentials: "include",
+        });
+  
+        if(!res){
+          console.log("fail to fetch streams");
+          return;
+        }
+        const data = await res.json();
+  
+        const songs: Song[] = data.streams.map((stream: any) => ({
+          id: stream.id,
+          title: stream.title,
+          likes: stream._count?.upVotes || 0,
+          dislikes: 0,
+          thumbnailUrl: stream.smallImg,
+        })) 
+  
+        setQueue(songs);
+      } catch (error) {
+          console.error(`Error fetching streams: ${error}`);
+      }
   }
 
   useEffect(() =>{

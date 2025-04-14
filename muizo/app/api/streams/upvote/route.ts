@@ -2,7 +2,6 @@ import { prismaClient } from "@/app/lib/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
-import { authOptions } from "../../auth/[...nextauth]/route";
 
 // Upvotes will on need stream id because it only have to know that this stream got up vote
 const UpvoteSchema = z.object({
@@ -10,7 +9,7 @@ const UpvoteSchema = z.object({
 });
 
 export async function POST(req: NextRequest){
-    const session = await getServerSession(authOptions); // to get user data availabe on session (session starts when user logs in)
+    const session = await getServerSession(); // to get user data availabe on session (session starts when user logs in)
     
     //TODO: replace this email with id. don't use email (by default nextauth gives you email not id )
     //TOD: can get rid of db call here
