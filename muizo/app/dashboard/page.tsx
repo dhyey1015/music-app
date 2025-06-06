@@ -7,6 +7,8 @@ import { ArrowDown, ArrowUp, Play, Share2} from "lucide-react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSession } from "next-auth/react";
+import { YT_REGEX } from "../api/streams/route";
+import ShowErrorMessage from "../constants/ShowErrMsg";
 // import axios from "axios";
 
 const REFRESH_INTERVAL_MS = 10 * 1000;
@@ -31,6 +33,7 @@ export default function SongVotingQueue() {
   const [inputLink, setInputLink] = useState("");
   const [queue, setQueue] = useState<Song[]>([]);
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
+  const [errMsg, setErrMsg] = useState("")
 
 
   useEffect(() => {
@@ -56,6 +59,7 @@ export default function SongVotingQueue() {
       const data = await res.json();
 
       const songs: Song[] = data.streams
+      // TODO: fix this
       .sort((a: any, b: any) => (b.upvotes || 0) - (a.upvotes || 0))
       .map((stream: any) => ({
         id: stream.id,
@@ -152,6 +156,26 @@ export default function SongVotingQueue() {
     }
   };
 
+  const addSong = () => {
+    fetch("/api/streams", {
+      method: "POST",
+      body: JSON.stringify({
+        createrId: session.data?.user,
+        url: inputLink
+      })
+    })
+  }
+
+  const checkInputLink = () => {
+    if(!(inputLink.match(YT_REGEX))){
+      setErrMsg("Please provide correct Youtube Url.")
+      return false
+    } else {
+      setErrMsg("")
+      return true
+    }
+  }
+
   return (
     <div className="flex flex-col bg-black space-y-6 min-h-screen p-4">
       <header className="flex justify-between">
@@ -166,27 +190,40 @@ export default function SongVotingQueue() {
       </header>
 
       <div className="flex items-center justify-center">
-        <div className="space-y-4 w-full max-w-[300px] md:max-w-[400px] lg:max-w-[800px]">
-          <Input
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
-            placeholder="Paste a Youtube link"
-            value={inputLink}
-            onChange={(e) => setInputLink(e.target.value)}
-          />
-          <Button 
+      <div className="space-y-4 w-full max-w-[300px] md:max-w-[400px] lg:max-w-[800px]">
+        <Input
+          className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+          placeholder="Paste a YouTube link"
+          value={inputLink}
+          onChange={(e) => setInputLink(e.target.value)}
+        />
+        
+        {errMsg && <ShowErrorMessage msg={errMsg} />}
+        {/* TODO: fix that if anything is given input don't show this div card if correct thing then show this div card */}
+        {inputLink && (
+          <div className="w-full max-w-[1000px] min-h-[100px] sm:h-[150px] bg-gray-900 text-white rounded-xl shadow-md px-4">
+            <div className="pl-2 flex items-center h-full space-x-5">
+              <img
+                src= "#"
+                alt="#"
+                className="w-[80px] sm:w-[130px] md:w-[170px] h-[50px] sm:h-[80px] md:h-[100px] rounded-md object-cover"
+              />
+            </div>
+          </div>
+        )}
+        <Button
           className="bg-purple-400 w-full hover:bg-purple-900"
           onClick={() => {
-            fetch("/api/streams", {
-              method: "POST",
-              body: JSON.stringify({
-                createrId: session.data?.user,
-                url: inputLink
-              })
-            })
+            if (checkInputLink()) {
+              addSong();
+            }
           }}
-          >Add to queue</Button>
-        </div>
+        >
+          Add to queue
+        </Button>
+        
       </div>
+    </div>
 
       <div className="flex items-center justify-center">
         <div className="space-y-4 w-full max-w-[300px] md:max-w-[400px] lg:max-w-[800px]">

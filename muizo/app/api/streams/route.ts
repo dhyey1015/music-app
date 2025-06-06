@@ -5,7 +5,7 @@ import { prismaClient } from "@/app/lib/db";
 //@ts-ignore
 import youtubesearchapi from "youtube-search-api";
 
-const YT_REGEX = /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
+export const YT_REGEX = /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
 const CreateStreamSchema = z.object({
     createrId: z.string(),
     // url: z.string().refine((url) =>
