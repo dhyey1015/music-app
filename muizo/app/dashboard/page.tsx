@@ -7,8 +7,10 @@ import { ArrowDown, ArrowUp, Play, Share2} from "lucide-react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSession } from "next-auth/react";
-import { YT_REGEX } from "../api/streams/route";
+import { YT_REGEX } from "@/app/lib/utils";
 import ShowErrorMessage from "../constants/ShowErrMsg";
+import LiteYouTubeEmbed from 'react-lite-youtube-embed';
+import 'react-lite-youtube-embed/dist/LiteYouTubeEmbed.css';
 // import axios from "axios";
 
 const REFRESH_INTERVAL_MS = 10 * 1000;
@@ -28,12 +30,42 @@ type Song = {
   haveUpvoted: boolean;
 };
 
+type Suggestion = {
+  id: string;
+  type: 'video';
+  thumbnail: string[]; // Array of image URLs
+  title: string;
+  channelTitle: string;
+  shortBylineText: string;
+  length: {
+    text: string;    // e.g., "12:34"
+    seconds: number; // e.g., 754
+  };
+  isLive: boolean;
+};
+
+type VideoData = {
+  id: string;
+  title: string;
+  thumbnail: string[];
+  isLive: boolean;
+  channel: string;
+  channelId: string;
+  description: string;
+  keywords: string[];
+  suggestion: Suggestion[];
+};
+
 export default function SongVotingQueue() {
   const session = useSession();
   const [inputLink, setInputLink] = useState("");
   const [queue, setQueue] = useState<Song[]>([]);
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [errMsg, setErrMsg] = useState("")
+  // const [ytVideoID, setYtVideoID] = useState("")
+  // const [ytVideo, setYtVideo] = useState<VideoData>()
+  const isValidInputLink = inputLink.match(YT_REGEX)
+  const ytId = inputLink.split("?v=")[1];
 
 
   useEffect(() => {
@@ -159,6 +191,9 @@ export default function SongVotingQueue() {
   const addSong = () => {
     fetch("/api/streams", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         createrId: session.data?.user,
         url: inputLink
@@ -195,22 +230,28 @@ export default function SongVotingQueue() {
           className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
           placeholder="Paste a YouTube link"
           value={inputLink}
-          onChange={(e) => setInputLink(e.target.value)}
+          onChange={(e) => {
+           const value = e.target.value;
+            setInputLink(value);
+          }}
         />
         
         {errMsg && <ShowErrorMessage msg={errMsg} />}
-        {/* TODO: fix that if anything is given input don't show this div card if correct thing then show this div card */}
-        {inputLink && (
-          <div className="w-full max-w-[1000px] min-h-[100px] sm:h-[150px] bg-gray-900 text-white rounded-xl shadow-md px-4">
-            <div className="pl-2 flex items-center h-full space-x-5">
-              <img
-                src= "#"
-                alt="#"
-                className="w-[80px] sm:w-[130px] md:w-[170px] h-[50px] sm:h-[80px] md:h-[100px] rounded-md object-cover"
-              />
+        {/* if link is not valid show some error message instead of rendering */}
+        {isValidInputLink && (
+          <div className="w-full flex justify-center bg-gray-900 rounded-xl">
+            <div className="w-full max-w-[500px] h-[350px] text-white rounded-xl shadow-md px-4 overflow-hidden">
+              <div className="w-full h-full">
+                <LiteYouTubeEmbed 
+                  id={ytId}
+                  title="YouTube Preview"
+                  wrapperClass="w-full h-full rounded-lg overflow-hidden"
+                />
+              </div>
             </div>
           </div>
         )}
+
         <Button
           className="bg-purple-400 w-full hover:bg-purple-900"
           onClick={() => {

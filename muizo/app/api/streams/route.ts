@@ -4,8 +4,7 @@ import z from 'zod';
 import { prismaClient } from "@/app/lib/db";
 //@ts-ignore
 import youtubesearchapi from "youtube-search-api";
-
-export const YT_REGEX = /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
+import { YT_REGEX } from "@/app/lib/utils";
 const CreateStreamSchema = z.object({
     createrId: z.string(),
     // url: z.string().refine((url) =>
@@ -40,7 +39,6 @@ export async function POST(req: NextRequest){
 
         //this line sorts the elements in lower to higher order
         thumbnails.sort((a : {width: number}, b : {width: number}) => a.width < b.width ? -1 : 1);
-
 
         const newStream = await prismaClient.stream.create({
             data:{
